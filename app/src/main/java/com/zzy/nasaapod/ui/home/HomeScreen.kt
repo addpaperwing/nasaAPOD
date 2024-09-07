@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zzy.nasaapod.ui.MainViewModel
-import com.zzy.nasaapod.ui.component.HomeImageList
+import com.zzy.nasaapod.ui.component.APODImageListInfinity
 
 @Composable
 fun HomeScreen(
@@ -15,13 +15,10 @@ fun HomeScreen(
 ) {
     val getAPODsState by viewModel.getAPODsState.collectAsStateWithLifecycle()
 
-    HomeImageList(
+    APODImageListInfinity(
         modifier = modifier,
         uiState = getAPODsState,
         onLoadMore = viewModel::loadMore,
-        onLikeApod =  {apod, isFav ->
-
-
-        },
+        onLikeChangeApod =  viewModel::onLikeStateChanged,
         onError = onError)
 }

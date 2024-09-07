@@ -27,7 +27,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NasaAPODTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+
+                    },
+                    bottomBar = {
+
+                    }
+                ) { innerPadding ->
                     HomeScreen(
                         modifier = Modifier.padding(innerPadding),
                         viewModel = viewModel,

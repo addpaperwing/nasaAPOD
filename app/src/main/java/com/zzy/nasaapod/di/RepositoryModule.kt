@@ -1,6 +1,7 @@
 package com.zzy.nasaapod.di
 
 
+import com.zzy.nasaapod.data.local.APODDao
 import com.zzy.nasaapod.data.repository.DefaultAPODRepository
 import com.zzy.nasaapod.data.repository.APODRepository
 import dagger.Binds
@@ -13,6 +14,6 @@ import dagger.hilt.components.SingletonComponent
 internal interface RepositoryModule {
 
     @Binds
-    fun bindAppDataRepository(appDataRepository: DefaultAPODRepository): APODRepository
+    fun bindAppDataRepository(appDataRepository: DefaultAPODRepository, dao: APODDao): APODRepository
 
 }

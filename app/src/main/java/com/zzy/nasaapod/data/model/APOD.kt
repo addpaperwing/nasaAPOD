@@ -26,7 +26,7 @@ data class APOD(
     @Json(name = "media_type") val mediaType: String = "",
     val title: String = "",
     val url: String = "",
-    val localPath: String? = null
+    var localPath: String? = null
 ) {
 
     fun isImage() = mediaType == "image"
