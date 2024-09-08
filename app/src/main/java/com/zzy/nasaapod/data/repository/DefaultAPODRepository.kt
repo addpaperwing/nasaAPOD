@@ -14,7 +14,7 @@ class DefaultAPODRepository @Inject constructor(
 ): APODRepository {
 
     override fun getAPODs(): Flow<List<APOD>> = flow {
-        api.getAPODs().filter { it.isImage() }
+        emit(api.getAPODs().filter { it.isImage() })
     }
 
     override suspend fun onAPODLikeStateChange(apod: APOD, isLike: Boolean) {

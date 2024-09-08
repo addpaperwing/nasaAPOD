@@ -31,6 +31,17 @@ class GetRemoteAPODsUseCase @Inject constructor(
         emit(UiState.Error(it))
     }.flowOn(dispatcher)
 
+//    repository.getSavedAPODs().combine<List<APOD>, List<APOD>, UiState<List<APOD>>>(
+//        repository.getSavedAPODs()
+//    ) { remote, local ->
+//        val likeMap = local.associateBy { it.date }
+//        remote.forEach {
+//            it.localPath = likeMap[it.date]?.localPath
+//        }
+//        UiState.Success(remote)
+//    }
+
+
 
 //        flow {
 //        emit(repository.getAPODs().filter {

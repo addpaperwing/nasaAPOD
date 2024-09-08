@@ -19,12 +19,13 @@ import com.zzy.nasaapod.ui.theme.NasaAPODTheme
 @Composable
 fun APODImageListInfinity(
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
     uiState: UiState<List<APOD>>,
     onLoadMore: () -> Unit,
     onLikeChangeApod: (APOD, Boolean) -> Unit,
     onError: (Throwable) -> Unit = {}
 ) {
-    val listState = rememberLazyListState()
+
     val apods: MutableList<APOD> = remember { mutableStateListOf() }
 
     // observe list scrolling
@@ -73,10 +74,10 @@ fun PreviewInfinityImageList() {
     NasaAPODTheme {
         APODImageListInfinity(uiState = UiState.Success(listOf(
             APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
         )), onLoadMore = {
 
         }, onLikeChangeApod = { apod, b ->

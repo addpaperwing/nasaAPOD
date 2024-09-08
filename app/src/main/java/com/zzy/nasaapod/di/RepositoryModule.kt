@@ -14,6 +14,6 @@ import dagger.hilt.components.SingletonComponent
 internal interface RepositoryModule {
 
     @Binds
-    fun bindAppDataRepository(appDataRepository: DefaultAPODRepository, dao: APODDao): APODRepository
+    fun bindAppDataRepository(appDataRepository: DefaultAPODRepository): APODRepository
 
 }

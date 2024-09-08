@@ -43,10 +43,10 @@ fun PreviewImageList() {
     NasaAPODTheme {
         APODImageList(apods = listOf(
             APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
-//            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
+            APOD(title = "picture title", date = "2024-01-01"),
         ), onLikeChangeApod = { apod, b ->
 
         })
