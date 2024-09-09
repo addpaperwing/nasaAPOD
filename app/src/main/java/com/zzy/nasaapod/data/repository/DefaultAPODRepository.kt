@@ -21,27 +21,6 @@ class DefaultAPODRepository @Inject constructor(
     private val dao: APODDao,
 ): APODRepository {
 
-//    private val cachedList : ArrayList<APOD> = ArrayList()
-
-//    override fun getNewAPODs(): Flow<UiState<List<APOD>>> = flow {
-//        emit(api.getAPODs().filter { it.isImage() })
-//    }.map {
-//        cachedList.addAll(it)
-//        cachedList
-//    }.combine(getSavedAPODs()) { remote, local ->
-//        val likeMap = local.associateBy { it.date }
-//        remote.forEach {
-//            it.updateLocalPath(likeMap[it.date]?.localPath)
-//        }
-//
-//        remote
-//    }.map<List<APOD>, UiState<List<APOD>>> {
-//        UiState.Success(it)
-//    }.catch {
-//        it.printStackTrace()
-//        emit(UiState.Error(it))
-//    }
-
     override fun getNewAPODs(): Flow<UiState<List<APOD>>> = flow<UiState<List<APOD>>> {
         emit(UiState.Success(api.getAPODs().filter { it.isImage() }))
     }.onStart {

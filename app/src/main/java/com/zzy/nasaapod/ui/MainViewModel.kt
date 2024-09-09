@@ -29,11 +29,6 @@ class MainViewModel @Inject constructor(
     private val repository: APODRepository,
 ): ViewModel() {
 
-//    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-//    val isLoading = _isLoading.asStateFlow()
-
-//    private val _apods: MutableStateFlow<List<APOD>> = MutableStateFlow(emptyList())
-
     private val _page: MutableStateFlow<Int> = MutableStateFlow(0)
 
     val savedAPODs: StateFlow<List<APOD>> = repository.getSavedAPODs().stateIn(

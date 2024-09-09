@@ -1,17 +1,11 @@
 package com.zzy.nasaapod.util
 
-import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
-import android.net.Uri
-import android.os.Build
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import coil.ImageLoader
@@ -45,7 +39,7 @@ object BitmapUtil {
             }
 
             val path = "${context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.path}${File.separator}$ALBUM_NAME${File.separator}$name.jpeg"
-            Log.d(TAG,"Image saved , path created $path")
+            Log.d(TAG,"path created $path")
             val file = File(path)
             file.createNewFile()
 
@@ -88,7 +82,7 @@ object BitmapUtil {
             }
 
             val path = "$externalPath${File.separator}$ALBUM_NAME${File.separator}$name.jpeg"
-            Log.d(TAG,"Image saved , path created $path")
+            Log.d(TAG,"path created $path")
             val file = File(path)
             file.createNewFile()
 

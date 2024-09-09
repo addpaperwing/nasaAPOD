@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface APODRepository {
     fun getNewAPODs():Flow<UiState<List<APOD>>>
-//    fun getNewAPODs():Flow<List<APOD>>
     suspend fun onAPODLikeStateChange(apod: APOD, isLike: Boolean)
     fun getSavedAPODs(): Flow<List<APOD>>
 }
