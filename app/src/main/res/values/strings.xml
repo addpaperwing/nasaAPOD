@@ -3,4 +3,6 @@
     
     <string name="home">Home</string>
     <string name="like">Like</string>
+    
+    <string name="image_saved">Image saved to %s</string>
 </resources>

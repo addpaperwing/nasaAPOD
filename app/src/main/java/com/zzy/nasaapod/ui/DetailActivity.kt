@@ -3,12 +3,14 @@ package com.zzy.nasaapod.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.zzy.nasaapod.R
 import com.zzy.nasaapod.data.model.APOD
 import com.zzy.nasaapod.ui.component.APODDetail
 import com.zzy.nasaapod.ui.theme.NasaAPODTheme
@@ -41,7 +43,9 @@ class DetailActivity: ComponentActivity() {
                     APODDetail(
                         modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
                         apod = apod
-                    )
+                    ) {
+                        Toast.makeText(this, getString(R.string.image_saved, it), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
