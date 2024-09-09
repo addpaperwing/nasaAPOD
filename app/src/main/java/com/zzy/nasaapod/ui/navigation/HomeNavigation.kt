@@ -20,6 +20,7 @@ internal const val HOME_ROUTE = "home"
 
 fun NavGraphBuilder.homeScreen(
     viewModel: MainViewModel,
+    onItemClick: (APOD) -> Unit,
     onError: (String) -> Unit,
 ) {
     composable(
@@ -30,6 +31,7 @@ fun NavGraphBuilder.homeScreen(
             HomeScreen(
                 viewModel = viewModel,
                 onLikeChangeApod = viewModel::onLikeStateChanged,
+                onItemClick = onItemClick,
                 onError = onError
             )
         }
@@ -40,6 +42,7 @@ fun NavGraphBuilder.homeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
+    onItemClick: (APOD) -> Unit,
     onLikeChangeApod: (APOD, Boolean) -> Unit,
     onError: (String) -> Unit,
 ) {
@@ -59,6 +62,7 @@ fun HomeScreen(
         apods = apods,
         isLoading = newApodsState is UiState.Loading,
         onLoadMore = viewModel::loadMore,
+        onItemClick = onItemClick,
         onLikeChangeApod =  onLikeChangeApod
     )
 }

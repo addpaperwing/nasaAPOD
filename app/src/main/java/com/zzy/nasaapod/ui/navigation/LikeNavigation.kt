@@ -15,6 +15,7 @@ internal const val LIKE_ROUTE = "like"
 
 fun NavGraphBuilder.likeScreen(
     viewModel: MainViewModel,
+    onItemClick: (APOD) -> Unit,
 ) {
     composable(
         route = LIKE_ROUTE,
@@ -23,6 +24,7 @@ fun NavGraphBuilder.likeScreen(
         content = {
             LikeScreen(
                 viewModel = viewModel,
+                onItemClick = onItemClick,
                 onLikeChangeApod = viewModel::onLikeStateChanged
             )
         }
@@ -33,6 +35,7 @@ fun NavGraphBuilder.likeScreen(
 fun LikeScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
+    onItemClick: (APOD) -> Unit,
     onLikeChangeApod: (APOD, Boolean) -> Unit,
 ) {
     val apods by viewModel.savedAPODs.collectAsStateWithLifecycle()
@@ -40,6 +43,7 @@ fun LikeScreen(
     APODImageList(
         modifier = modifier,
         apods = apods,
+        onItemClick = onItemClick,
         onLikeChangeApod = onLikeChangeApod
     )
 }

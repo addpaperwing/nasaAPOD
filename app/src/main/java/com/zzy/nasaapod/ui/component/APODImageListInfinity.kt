@@ -21,6 +21,7 @@ fun APODImageListInfinity(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     apods: List<APOD>,
+    onItemClick: (APOD) -> Unit,
     isLoading: Boolean,
     onLoadMore: () -> Unit,
     onLikeChangeApod: (APOD, Boolean) -> Unit,
@@ -43,6 +44,7 @@ fun APODImageListInfinity(
         modifier = modifier,
         listState = listState,
         apods = apods,
+        onItemClick = onItemClick,
         onLikeChangeApod = onLikeChangeApod,
         footer = {
             if (isLoading) {
@@ -77,7 +79,7 @@ fun PreviewInfinityImageList() {
         ), isLoading = true,
             onLoadMore = {
 
-        }, onLikeChangeApod = { apod, b ->
+        }, onItemClick = {}, onLikeChangeApod = { apod, b ->
 
         })
     }

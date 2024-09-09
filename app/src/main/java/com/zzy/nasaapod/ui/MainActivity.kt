@@ -61,6 +61,9 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
                         viewModel = viewModel,
+                        onItemClick = {
+                            launchDetail(it)
+                        }
                     )
                     { errorMessage ->
                        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()

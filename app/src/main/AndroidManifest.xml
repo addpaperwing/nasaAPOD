@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     
     <application
         android:allowBackup="true"
@@ -26,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.zzy.nasaapod.ui.DetailActivity" />
         
         <meta-data
             android:name="api_key" android:value="vBsK0zf1roZqAEd67rpTj5IoTYHPNzPTFNmsNrN2">

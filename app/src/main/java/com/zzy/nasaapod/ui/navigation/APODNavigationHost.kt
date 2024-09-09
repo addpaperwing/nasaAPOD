@@ -23,6 +23,7 @@ fun APODNavigationHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModel: MainViewModel,
+    onItemClick: (APOD) -> Unit,
     onError: (String) -> Unit,
 ) {
     NavHost(
@@ -30,8 +31,8 @@ fun APODNavigationHost(
         navController = navController,
         startDestination = HOME_ROUTE
     ) {
-        homeScreen(viewModel, onError)
+        homeScreen(viewModel, onItemClick, onError)
 
-        likeScreen(viewModel)
+        likeScreen(viewModel, onItemClick)
     }
 }

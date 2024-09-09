@@ -20,6 +20,7 @@ fun APODImageList(
     listState: LazyListState = rememberLazyListState(),
     apods: List<APOD>,
     footer: @Composable () -> Unit = {},
+    onItemClick: (APOD) -> Unit,
     onLikeChangeApod: (APOD, Boolean) -> Unit,
 ) {
     LazyColumn(
@@ -27,7 +28,7 @@ fun APODImageList(
         state = listState
     ) {
         items(apods) {
-            ImageItem(apod = it, onLikeTapped = onLikeChangeApod)
+            ImageItem(apod = it, onItemClick = onItemClick, onLikeTapped = onLikeChangeApod)
         }
         item {
             footer()
@@ -46,7 +47,7 @@ fun PreviewImageList() {
             APOD(title = "picture title", date = "2024-01-01"),
             APOD(title = "picture title", date = "2024-01-01"),
             APOD(title = "picture title", date = "2024-01-01"),
-        ), onLikeChangeApod = { apod, b ->
+        ), onItemClick = {}, onLikeChangeApod = { apod, b ->
 
         })
     }

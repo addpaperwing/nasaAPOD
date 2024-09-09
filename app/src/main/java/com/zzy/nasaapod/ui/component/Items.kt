@@ -1,11 +1,8 @@
 package com.zzy.nasaapod.ui.component
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.os.Environment
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,40 +18,28 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
-import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.zzy.nasaapod.R
 import com.zzy.nasaapod.data.model.APOD
 import com.zzy.nasaapod.ui.theme.NasaAPODTheme
-import com.zzy.nasaapod.util.BitmapUtil
-import com.zzy.nasaapod.util.BitmapUtil.downloadImage
+import com.zzy.nasaapod.util.BitmapUtil.saveImageToAppDirectory
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 @Composable
 fun ImageItem(
     modifier: Modifier = Modifier,
     apod: APOD,
+    onItemClick: (APOD) -> Unit = {},
     onLikeTapped: (APOD, Boolean) -> Unit
 ) {
 //    var isLike by remember { mutableStateOf(apod.localPath != null) }
@@ -83,7 +68,9 @@ fun ImageItem(
         }
     }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().clickable {
+        onItemClick(apod)
+    }) {
         Image(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -125,7 +112,7 @@ private fun saveImage(context: Context, name: String, painter: AsyncImagePainter
     val state = painter.state as? AsyncImagePainter.State.Success
     val drawable = state?.result?.drawable
     return if (drawable != null) {
-        downloadImage(context, name, drawable)
+        saveImageToAppDirectory(context, name, drawable)
     } else {
         null
     }
