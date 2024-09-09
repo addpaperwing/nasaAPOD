@@ -16,16 +16,18 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
     listState: LazyListState,
-    uiState: UiState<List<APOD>>,
+//    uiState: UiState<List<APOD>>,
     onError: (Throwable) -> Unit,
 ) {
-
+    val apods by viewModel.apods.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     APODImageListInfinity(
         modifier = modifier,
         listState = listState,
-        uiState = uiState,
+        apods = apods,
+        isLoading = isLoading,
         onLoadMore = viewModel::loadMore,
         onLikeChangeApod =  viewModel::onLikeStateChanged,
-        onError = onError)
+    )
 }

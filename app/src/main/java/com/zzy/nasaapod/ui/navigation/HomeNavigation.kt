@@ -14,8 +14,8 @@ internal const val HOME_ROUTE = "home"
 fun NavGraphBuilder.homeScreen(
     viewModel: MainViewModel,
     listState: LazyListState,
-    uiState: UiState<List<APOD>>,
-    onError: (Throwable) -> Unit,
+//    uiState: UiState<List<APOD>>,
+//    onError: (Throwable) -> Unit,
 ) {
     composable(
         route = HOME_ROUTE,
@@ -25,8 +25,8 @@ fun NavGraphBuilder.homeScreen(
             HomeScreen(
                 viewModel = viewModel,
                 listState = listState,
-                uiState = uiState,
-                onError = onError
+//                uiState = uiState,
+//                onError = onError
             )
         }
     )

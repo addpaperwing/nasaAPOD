@@ -23,7 +23,7 @@ fun APODNavigationHost(
     viewModel: MainViewModel,
     onError: (Throwable) -> Unit,
 ) {
-    val getAPODsState by viewModel.getAPODsState.collectAsStateWithLifecycle()
+
     val listState = rememberLazyListState()
 
     NavHost(
@@ -31,7 +31,9 @@ fun APODNavigationHost(
         navController = navController,
         startDestination = HOME_ROUTE
     ) {
-        homeScreen(viewModel, listState, getAPODsState, onError)
+        homeScreen(viewModel, listState,
+//            onError
+        )
 
         likeScreen(viewModel)
     }

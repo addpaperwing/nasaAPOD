@@ -10,7 +10,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,20 +20,28 @@ import com.zzy.nasaapod.R
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route?: HOME_ROUTE
 
     NavigationBar {
-        screens.values.forEachIndexed { index, destinations ->
+        screens.values.forEach { screen ->
             NavigationBarItem(
-                selected = selectedTabIndex == index,
+                selected = currentRoute == screen.route,
                 onClick = {
-                    selectedTabIndex = index
-                    navController.navigate(destinations.route)
+                    navController.navigate(screen.route) {
+                        navController.graph.startDestinationRoute?.let { route ->
+                            popUpTo(route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
                 }, icon = {
                     Icon(
-                        imageVector = destinations.icon,
-                        contentDescription = stringResource(id = destinations.title),
-                        tint = if (selectedTabIndex == index) {
+                        imageVector = screen.icon,
+                        contentDescription = stringResource(id = screen.title),
+                        tint = if (currentRoute == screen.route) {
                             MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.primary.copy(0.5f)
@@ -47,22 +54,22 @@ fun BottomNavigationBar(navController: NavController) {
 }
 
 internal val screens = mapOf(
-    HOME_ROUTE to Destinations.Home,
-    LIKE_ROUTE to Destinations.Like,
+    HOME_ROUTE to Screen.Home,
+    LIKE_ROUTE to Screen.Like,
 )
 
-sealed class Destinations(
+sealed class Screen(
     val route: String,
     val title: Int,
     val icon: ImageVector
 ) {
-    data object Home : Destinations(
+    data object Home : Screen(
         route = HOME_ROUTE,
         title = R.string.home,
         icon = Icons.Default.Home,
     )
 
-    data object Like : Destinations(
+    data object Like : Screen(
         route = LIKE_ROUTE,
         title = R.string.like,
         icon = Icons.Default.Favorite

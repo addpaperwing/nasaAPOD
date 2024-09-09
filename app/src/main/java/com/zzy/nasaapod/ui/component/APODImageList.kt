@@ -18,7 +18,7 @@ fun APODImageList(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     apods: List<APOD>,
-    footer: (@Composable () -> Unit)? = null,
+    footer: @Composable () -> Unit = {},
     onLikeChangeApod: (APOD, Boolean) -> Unit,
 ) {
     LazyColumn(

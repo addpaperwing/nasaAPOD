@@ -3,9 +3,9 @@ package com.zzy.nasaapod.data.repository
 import com.zzy.nasaapod.data.local.APODDao
 import com.zzy.nasaapod.data.model.APOD
 import com.zzy.nasaapod.data.remote.Api
-import com.zzy.nasaapod.data.remote.UiState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
+import okio.IOException
 import javax.inject.Inject
 
 class DefaultAPODRepository @Inject constructor(
@@ -13,8 +13,19 @@ class DefaultAPODRepository @Inject constructor(
     private val dao: APODDao,
 ): APODRepository {
 
-    override fun getAPODs(): Flow<List<APOD>> = flow {
-        emit(api.getAPODs().filter { it.isImage() })
+    override suspend fun getNewAPODs(): List<APOD> {
+        val remote = api.getAPODs().filter { it.isImage() }
+
+        val local = dao.getSavedAPOD().first()
+
+        if (local.isNotEmpty()) {
+            val likeMap = local.associateBy { it.date }
+            remote.forEach {
+                it.localPath = likeMap[it.date]?.localPath
+            }
+        }
+
+        return remote
     }
 
     override suspend fun onAPODLikeStateChange(apod: APOD, isLike: Boolean) {

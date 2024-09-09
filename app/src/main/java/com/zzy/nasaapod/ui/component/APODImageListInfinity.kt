@@ -20,14 +20,11 @@ import com.zzy.nasaapod.ui.theme.NasaAPODTheme
 fun APODImageListInfinity(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
-    uiState: UiState<List<APOD>>,
+    apods: List<APOD>,
+    isLoading: Boolean,
     onLoadMore: () -> Unit,
     onLikeChangeApod: (APOD, Boolean) -> Unit,
-    onError: (Throwable) -> Unit = {}
 ) {
-
-    val apods: MutableList<APOD> = remember { mutableStateListOf() }
-
     // observe list scrolling
     val reachedBottom: Boolean by remember {
         derivedStateOf { listState.reachedBottom() }
@@ -37,14 +34,6 @@ fun APODImageListInfinity(
     LaunchedEffect(reachedBottom) {
         if (reachedBottom) onLoadMore()
     }
-//
-    LaunchedEffect(uiState) {
-        if (uiState is UiState.Success) {
-            apods += uiState.data
-        } else if (uiState is UiState.Error) {
-            onError(uiState.exception)
-        }
-    }
 
     APODImageList(
         modifier = modifier,
@@ -52,7 +41,7 @@ fun APODImageListInfinity(
         apods = apods,
         onLikeChangeApod = onLikeChangeApod,
         footer = {
-            if (uiState is UiState.Loading) {
+            if (isLoading) {
                 LoadingItem()
             }
         }
@@ -63,7 +52,7 @@ fun APODImageListInfinity(
 
 internal fun LazyListState.reachedBottom(buffer: Int = 3): Boolean {
     val lastVisibleItem = this.layoutInfo.visibleItemsInfo.lastOrNull()
-    return lastVisibleItem?.index != 0 && lastVisibleItem?.index == this.layoutInfo.totalItemsCount - buffer
+    return (lastVisibleItem?.index?:0) >= (this.layoutInfo.totalItemsCount - buffer)
 }
 
 
@@ -72,13 +61,14 @@ internal fun LazyListState.reachedBottom(buffer: Int = 3): Boolean {
 @Composable
 fun PreviewInfinityImageList() {
     NasaAPODTheme {
-        APODImageListInfinity(uiState = UiState.Success(listOf(
+        APODImageListInfinity(apods = listOf(
             APOD(title = "picture title", date = "2024-01-01"),
             APOD(title = "picture title", date = "2024-01-01"),
             APOD(title = "picture title", date = "2024-01-01"),
             APOD(title = "picture title", date = "2024-01-01"),
             APOD(title = "picture title", date = "2024-01-01"),
-        )), onLoadMore = {
+        ), isLoading = true,
+            onLoadMore = {
 
         }, onLikeChangeApod = { apod, b ->
 
