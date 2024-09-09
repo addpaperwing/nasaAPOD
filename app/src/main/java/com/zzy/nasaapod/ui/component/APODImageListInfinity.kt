@@ -27,13 +27,17 @@ fun APODImageListInfinity(
 ) {
     // observe list scrolling
     val reachedBottom: Boolean by remember {
-        derivedStateOf { listState.reachedBottom() }
+        derivedStateOf { listState.reachedBottom(1) }
     }
 
     // load more if scrolled to bottom
     LaunchedEffect(reachedBottom) {
-        if (reachedBottom) onLoadMore()
+        if (reachedBottom) {
+            onLoadMore()
+        }
     }
+
+
 
     APODImageList(
         modifier = modifier,
@@ -50,9 +54,12 @@ fun APODImageListInfinity(
 
 }
 
-internal fun LazyListState.reachedBottom(buffer: Int = 3): Boolean {
+internal fun LazyListState.reachedBottom(buffer: Int = 0): Boolean {
     val lastVisibleItem = this.layoutInfo.visibleItemsInfo.lastOrNull()
-    return (lastVisibleItem?.index?:0) >= (this.layoutInfo.totalItemsCount - buffer)
+    val lastItemIndex = (lastVisibleItem?.index?:0)
+    //default buffer = footer(1) + size(1) = 2
+    val triggerIndex = (this.layoutInfo.totalItemsCount - 2 - buffer)
+    return  lastItemIndex >= triggerIndex
 }
 
 

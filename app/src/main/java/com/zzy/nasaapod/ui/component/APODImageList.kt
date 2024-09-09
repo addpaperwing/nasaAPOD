@@ -1,6 +1,7 @@
 package com.zzy.nasaapod.ui.component
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -28,10 +29,8 @@ fun APODImageList(
         items(apods) {
             ImageItem(apod = it, onLikeTapped = onLikeChangeApod)
         }
-        if (footer != null) {
-            item {
-                footer()
-            }
+        item {
+            footer()
         }
     }
 }

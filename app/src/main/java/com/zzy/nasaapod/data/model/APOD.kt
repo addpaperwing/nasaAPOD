@@ -1,5 +1,8 @@
 package com.zzy.nasaapod.data.model
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
@@ -20,14 +23,21 @@ import com.squareup.moshi.JsonClass
 @Entity(tableName = "apod")
 data class APOD(
     @PrimaryKey val date: String = "", //We are getting only 1 pic per day so this is unique
-    val copyright: String = "",
-    val explanation: String = "",
-    val hdurl: String = "",
+//    val copyright: String = "",
+//    val explanation: String = "",
+//    val hdurl: String = "",
     @Json(name = "media_type") val mediaType: String = "",
     val title: String = "",
     val url: String = "",
     var localPath: String? = null
 ) {
+
+    var mutableLocalPath by mutableStateOf(localPath)
+
+    fun updateLocalPath(path: String?) {
+        localPath = path
+        mutableLocalPath = path
+    }
 
     fun isImage() = mediaType == "image"
 }

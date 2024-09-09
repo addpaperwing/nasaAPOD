@@ -1,9 +1,13 @@
 package com.zzy.nasaapod.ui.component
 
-import android.widget.ProgressBar
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Environment
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,18 +21,35 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
+import com.zzy.nasaapod.R
 import com.zzy.nasaapod.data.model.APOD
 import com.zzy.nasaapod.ui.theme.NasaAPODTheme
+import com.zzy.nasaapod.util.BitmapUtil
+import com.zzy.nasaapod.util.BitmapUtil.downloadImage
+import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 @Composable
 fun ImageItem(
@@ -36,32 +57,54 @@ fun ImageItem(
     apod: APOD,
     onLikeTapped: (APOD, Boolean) -> Unit
 ) {
-    var isFavorite by remember { mutableStateOf(apod.localPath != null) }
+//    var isLike by remember { mutableStateOf(apod.localPath != null) }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current)
+            .data(apod.url)
+            .placeholder(android.R.drawable.picture_frame)
+            .size(Size.ORIGINAL)
+            .build()
+    )
+
+
+    fun saveOrDeleteImage(isSave: Boolean) {
+        scope.launch {
+            var path: String? = null
+            if (isSave) {
+                path = saveImage(context, apod.date, painter)
+            } else {
+                apod.localPath?.let { localPath -> deleteImage(localPath) }
+            }
+            apod.updateLocalPath(path)
+            onLikeTapped(apod, isSave)
+        }
+    }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        AsyncImage(
+        Image(
             modifier = Modifier
                 .fillMaxWidth(),
+            painter = painter,
             contentScale = ContentScale.FillWidth,
-            model = apod.localPath?:apod.url,
-            contentDescription = apod.title
-        )
+            contentDescription = apod.title)
         Row(modifier = Modifier.padding(top = 6.dp, start = 12.dp, end = 12.dp, bottom = 24.dp)) {
             Column(Modifier.weight(1f)) {
                 Text(text = apod.title)
                 Text(text = apod.date)
             }
             IconToggleButton(
-                checked = isFavorite,
+                checked = apod.mutableLocalPath != null,
                 colors = IconButtonDefaults.iconToggleButtonColors(
                     checkedContentColor = MaterialTheme.colorScheme.error
                 ),
                 onCheckedChange = {
-                    isFavorite = it
-                    onLikeTapped(apod, it)
+                    saveOrDeleteImage(it)
                 }) {
                 Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    imageVector = if (apod.mutableLocalPath != null) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Like button"
                 )
             }
@@ -71,9 +114,27 @@ fun ImageItem(
 
 @Composable
 fun LoadingItem() {
-    Column(modifier = Modifier.fillMaxWidth().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         CircularProgressIndicator(modifier = Modifier.size(48.dp))
     }
+}
+
+private fun saveImage(context: Context, name: String, painter: AsyncImagePainter): String? {
+    val state = painter.state as? AsyncImagePainter.State.Success
+    val drawable = state?.result?.drawable
+    return if (drawable != null) {
+        downloadImage(context, name, drawable)
+    } else {
+        null
+    }
+}
+
+private fun deleteImage(path: String): Boolean {
+    val file = File(path)
+    file.delete()
+    return !file.exists()
 }
 
 @Preview
@@ -85,7 +146,7 @@ fun PreviewImageItem() {
                 title = "picture title",
                 date = "2024-01-01"
             )
-        ) { apod, isFavorite ->
+        ) { apod, isLike ->
 
         }
 

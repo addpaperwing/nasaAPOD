@@ -1,5 +1,6 @@
 package com.zzy.nasaapod.ui.navigation
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -13,6 +14,7 @@ import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.zzy.nasaapod.R
+import com.zzy.nasaapod.data.model.APOD
 import com.zzy.nasaapod.ui.MainViewModel
 
 
@@ -21,19 +23,14 @@ fun APODNavigationHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModel: MainViewModel,
-    onError: (Throwable) -> Unit,
+    onError: (String) -> Unit,
 ) {
-
-    val listState = rememberLazyListState()
-
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = HOME_ROUTE
     ) {
-        homeScreen(viewModel, listState,
-//            onError
-        )
+        homeScreen(viewModel, onError)
 
         likeScreen(viewModel)
     }

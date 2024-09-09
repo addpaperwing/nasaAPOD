@@ -1,5 +1,6 @@
 package com.zzy.nasaapod.ui
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -20,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.zzy.nasaapod.R
-import com.zzy.nasaapod.ui.home.HomeScreen
 import com.zzy.nasaapod.ui.navigation.APODNavigationHost
 import com.zzy.nasaapod.ui.navigation.BottomNavigationBar
 import com.zzy.nasaapod.ui.navigation.HOME_ROUTE
@@ -60,9 +60,10 @@ class MainActivity : ComponentActivity() {
                     APODNavigationHost(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        viewModel = viewModel
-                    ) {
-                       Toast.makeText(this, it.message?:"Error", Toast.LENGTH_SHORT).show()
+                        viewModel = viewModel,
+                    )
+                    { errorMessage ->
+                       Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
