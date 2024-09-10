@@ -1,6 +1,7 @@
 package com.zzy.nasaapod.di
 
 
+import com.zzy.nasaapod.data.local.APODDao
 import com.zzy.nasaapod.data.repository.DefaultAPODRepository
 import com.zzy.nasaapod.data.repository.APODRepository
 import dagger.Binds

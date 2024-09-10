@@ -2,54 +2,81 @@ package com.zzy.nasaapod.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.network.HttpException
 import com.zzy.nasaapod.data.model.APOD
 import com.zzy.nasaapod.data.remote.UiState
+import kotlinx.coroutines.flow.asStateFlow
 import com.zzy.nasaapod.data.repository.APODRepository
-import com.zzy.nasaapod.domain.GetMoreAPODsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
-import java.util.ArrayList
+import kotlinx.coroutines.launch
+import okio.IOException
+import java.net.UnknownHostException
 
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(getMoreAPODsUseCase: GetMoreAPODsUseCase): ViewModel() {
+class MainViewModel @Inject constructor(
+    private val repository: APODRepository,
+): ViewModel() {
 
     private val _page: MutableStateFlow<Int> = MutableStateFlow(0)
 
+    val savedAPODs: StateFlow<List<APOD>> = repository.getSavedAPODs().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList()
+    )
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val getAPODsState: StateFlow<UiState<List<APOD>>> = _page.flatMapLatest {
-        getMoreAPODsUseCase()
+    val newApodsState: StateFlow<UiState<List<APOD>>> = _page.flatMapLatest {
+        repository.getNewAPODs()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = UiState.Loading,
+        initialValue = UiState.Loading
     )
 
-//    val apods: StateFlow<List<APOD>> = getAPODsState.map {
-//        if (it is UiState.Success) {
-//            it.data
-//        } else {
-//            emptyList()
-//        }
-//    }.scan(ArrayList<APOD>()) { list, result ->
-//        list.addAll(result)
-//        list
-//    }.stateIn(
-//        scope = viewModelScope,
-//        started = SharingStarted.WhileSubscribed(5_000),
-//        initialValue = emptyList(),
-//    )
+    private val cachedList : ArrayList<APOD> = ArrayList()
+    val apods : StateFlow<List<APOD>> = newApodsState.map {
+        if (it is UiState.Success) {
+            it.data
+        } else {
+            emptyList()
+        }
+    }.map {
+        cachedList.addAll(it)
+        cachedList
+    }.combine(savedAPODs) { remote, local ->
+        val likeMap = local.associateBy { it.date }
+        remote.forEach {
+            it.updateLocalPath(likeMap[it.date]?.localPath)
+        }
+
+        remote
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList()
+    )
+
 
     fun loadMore() {
-        _page.value += 1
+        _page.value++
+    }
+
+    fun onLikeStateChanged(apod: APOD, isLike: Boolean) {
+        viewModelScope.launch {
+            repository.onAPODLikeStateChange(apod, isLike)
+        }
     }
 }

@@ -1,9 +1,15 @@
 package com.zzy.nasaapod.data.model
 
+import android.os.Parcelable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 //{
 //    "copyright": "Steve Mandel",
@@ -18,6 +24,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 @Entity(tableName = "apod")
+@Parcelize
 data class APOD(
     @PrimaryKey val date: String = "", //We are getting only 1 pic per day so this is unique
     val copyright: String = "",
@@ -26,8 +33,16 @@ data class APOD(
     @Json(name = "media_type") val mediaType: String = "",
     val title: String = "",
     val url: String = "",
-    val localPath: String? = null
-) {
+    var localPath: String? = null
+): Parcelable {
+
+    @IgnoredOnParcel
+    var mutableLocalPath by mutableStateOf(localPath)
+
+    fun updateLocalPath(path: String?) {
+        localPath = path
+        mutableLocalPath = path
+    }
 
     fun isImage() = mediaType == "image"
 }
